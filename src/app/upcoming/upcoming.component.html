@@ -1,0 +1,51 @@
+<p>upcoming works!</p>
+<div>
+  <form>
+    <div class="container-fluid">
+      <div class="spinner-grow text-success" role="status" *ngIf="isLoading">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <table class="table table-striped table-hover" aria-labelledby="tableLabel">
+        <thead>
+          <tr>
+            <th scope="col">Brand</th>
+            <th scope="col">Name</th>
+            <th scope="col">Release Date</th>
+            <th scope="col">Price</th>
+            <th scope="col">Raffle</th>
+            <th scope="col">ID</th>
+            <th scope="col" colspan="2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let d of allPosts; let i = index"
+              data-toggle="collapse" [attr.data-target]="'#img' + i" class="accordion-toggle">
+            <td>{{d.brand}}</td>
+            <td>{{d.name}}</td>
+            <td>{{d.releaseDate}}</td>
+            <td>{{d.retailPrice}}</td>
+            <td>{{d.raffle}}</td>
+            <td>{{d.ID}}</td> 
+            <td><a (click)="EditData(d)" class="btn btn-warning">Edit</a></td>
+            <td><a (click)="Delete(d.ID)" class="btn btn-danger">Delete</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </form>
+</div>
+
+<div>
+  <h2> Upcoming releases! </h2>
+  <div *ngFor="let d of allPosts; let i = index">
+    <div class="card" style="width: 18rem;" *ngFor="let d of allPosts; let i = index">
+      <img src={{d.imgSrc}}  class="card-img-top" alt={{d.name}}>
+      <div class="card-body">
+        <h5 class="card-title">{{d.name}}</h5>
+        <p class="card-text">Release: {{d.releaseDate}}</p>
+        <p class="card-text">Price: {{d.retailPrice}}</p>
+        <a href="#" class="btn btn-primary">Go somewhere</a>
+      </div> 
+  </div>
+</div>
+

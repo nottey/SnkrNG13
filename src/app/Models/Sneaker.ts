@@ -7,4 +7,6 @@ export class Sneaker {
   type: string
   upc: string
   dbImage: string
+  dbImageB64: string
+  imageChanged: boolean
 }

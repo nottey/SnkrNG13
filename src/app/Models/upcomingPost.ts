@@ -6,7 +6,9 @@ export class upcomingPost {
   raffle: boolean
   featured: boolean
   link1: string
-  ID: string
+  postID: string
   imgSrc: string
   imgData: any
+  dbImageB64: string
+  imageChanged: string
 }

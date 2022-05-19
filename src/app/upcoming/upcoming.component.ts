@@ -24,38 +24,49 @@ export class UpcomingComponent implements OnInit {
   EventValue: any = "Save";
   prevView: any;
   currView: any;
-  PostForm = new FormGroup({
+  UpcomingForm = new FormGroup({
     Brand: new FormControl("", [Validators.required]),
     Name: new FormControl("", [Validators.required]),
     ReleaseDate: new FormControl(null),
-    RetailPrice: new FormControl("", [Validators.required]),
-    Raffle: new FormControl("", [Validators.required]),
-    Link1: new FormControl("", [Validators.required]),
-    ID: new FormControl("", [Validators.required]),
-    DbImage: new FormControl(null),
+    RetailPrice: new FormControl({ value: '' }, [Validators.required]),
+    Raffle: new FormControl({ value: '' }, [Validators.required]),
+    Featured: new FormControl({ value: '' }),
+    Link1: new FormControl({ value: '' }, [Validators.required]),
+    ImgSrc: new FormControl(""),
+    ID: new FormControl({ value: ''}),
+
+    PostID: new FormControl("", [Validators.required]),
+    DbImage: new FormControl({ value: '', disabled: true }),
+    DBImageB64: new FormControl({ value: '', disabled: true }),
+    imageChanged: new FormControl(false),
   })
   uploadData: FormData;
+  uploadImage: File;
   filename = '';
   testtext: any;
   postImg: any;
+  imgData: string;
   imgListData: any;
   isImgLoading = true;
   selectedFile: ImageSnippet;
 
   ngOnInit(): void {
     this.getPosts();
-    //this.getPostImages();
-    this.PostForm = new FormGroup({
-      Brand: new FormControl("", [Validators.required]),
-      Name: new FormControl("", [Validators.required]),
-      ReleaseDate: new FormControl(null),
-      RetailPrice: new FormControl("", [Validators.required]),
-      Raffle: new FormControl("", [Validators.required]),
-      Link1: new FormControl("", [Validators.required]),
-      ID: new FormControl("", [Validators.required]),
-      DbImage: new FormControl(null),
-    })
+    this.UpcomingForm.value.DbImage = "";
+    this.UpcomingForm.value.DBImageB64 = "";
+    this.UpcomingForm.value.imageChanged = false;
+    this.UpcomingForm.value.imgSrc = ""; 
   }
+
+  /////////////////////////
+  /*  Can't load images into model for some reason
+   *  Want to add counter of shoes on list that are in the table
+   *  
+   *
+   *
+   *
+   */
+
 
 
   /// Begin SneakerImgController Calls ///
@@ -74,13 +85,22 @@ export class UpcomingComponent implements OnInit {
     })
   }
 
-  setFilename(files: any[]) {
-    if (files[0]) {
-      this.filename = files[0].name;
+  setFile(event: Event | null) {
+    if (event == null) return;
+    const element = event.currentTarget as HTMLInputElement;
+    let fileList: FileList | null = element.files;
+    if (fileList) {
+      console.log("FileUpload -> files", fileList); 
+      this.uploadImage = fileList[0];
+      this.filename = this.uploadImage.name;
+      this.UpcomingForm.controls["DbImage"].setValue(fileList.item.name);
+      this.UpcomingForm.value.imageChanged = true;
+      this.UpcomingForm.value.DBImageB64 = fileList.item.name; 
+      this.UpcomingForm.value.imgSrc = fileList.item.name; 
     }
-  }
+  } 
 
-  saveImg(files: Blob[]) {
+  saveImg(files: FileList | null) {
     if (!files) {
       return;
     }
@@ -102,56 +122,67 @@ export class UpcomingComponent implements OnInit {
   /// End SneakerImgController Calls ///
 
   getPosts() {
-    this.UpcomingService.getAll().subscribe((postData: upcomingPost[]) => {
+    this.UpcomingService.getAll().subscribe((postData: any[]) => {
       this.isLoading = false; 
       this.allPosts = postData;
+      this.postImg = postData[0].dbImageB64;
+      this.imgData = postData[0].dbImageB64;
     })
-  }
-
-  getPostImages() {
-    this.allPosts.forEach((element) => { 
-      /*this.SnkImgService.getImage(element.imgSrc).subscribe((data: any) => {
-        this.postImg = data;
-      })
-      element.imgData = this.postImg;*/
-      console.log(element.imgSrc);
-    }); 
   }
 
   getUpcomingPost(id:string) {
-    this.UpcomingService.get(id).subscribe((data: any) => {
+    /*this.UpcomingService.get(id).subscribe((data: any) => {
       this.data = data;
-    })
+      this.currPost = data; 
+    })*/
   }
 
-  EditData(Data: any) {
-    this.getImg(Data.dbImage);
-    this.PostForm.controls["Brand"].setValue(Data.brand);
-    this.PostForm.controls["Name"].setValue(Data.name);
-    this.PostForm.controls["ReleaseDate"].setValue(Data.releaseDate);
-    this.PostForm.controls["RetailPrice"].setValue(Data.retailPrice);
-    this.PostForm.controls["Raffle"].setValue(Data.raffle);
-    this.PostForm.controls["Link1"].setValue(Data.link1);
-    this.PostForm.controls["ID"].setValue(Data.id);
+  EditData(Data: any) { 
+    this.UpcomingForm.controls["Brand"].setValue(Data.brand);
+    this.UpcomingForm.controls["Name"].setValue(Data.name);
+    this.UpcomingForm.controls["ReleaseDate"].setValue(Data.releaseDate);
+    this.UpcomingForm.controls["RetailPrice"].setValue(Data.retailPrice);
+    this.UpcomingForm.controls["Raffle"].setValue(Data.raffle);
+    this.UpcomingForm.controls["Link1"].setValue(Data.link1);
+    this.UpcomingForm.controls["PostID"].setValue(Data.id);
+    this.UpcomingForm.controls["ID"].setValue(Data.id);
+    this.UpcomingForm.controls["DbImage"].setValue(Data.imgSrc);
+    this.UpcomingForm.controls["DBImageB64"].setValue(Data.dbImageB64);
+    this.UpcomingForm.controls["imageChanged"].setValue(Data.imageChanged);
+    this.UpcomingForm.controls["ImgSrc"].setValue(Data.imgSrc);
+    this.UpcomingForm.controls["Featured"].setValue(Data.featured);
     this.EventValue = "Update";
+    this.UpcomingService.get(Data.brand, Data.id).subscribe((data: any) => {
+      this.data = data;
+    });
     this.readonly = false;
   }
 
   Save() {
-    if (this.PostForm.invalid) {
+    this.UpcomingForm.value.DbImage = "";
+    this.UpcomingForm.value.DBImageB64 = "";
+    this.UpcomingForm.value.imageChanged = false;
+    this.UpcomingForm.value.ImgSrc = "";
+    this.UpcomingForm.value.Featured = "";
+    this.UpcomingForm.value.Raffle = false;
+    this.UpcomingForm.value.ID = this.UpcomingForm.value.PostID;
+    
+    this.uploadData = this.UpcomingForm.value;
+    if (this.UpcomingForm.invalid) {
       return;
-    }
-    this.UpcomingService.postData(this.PostForm.value).subscribe((data: any) => {
+    } 
+
+    this.UpcomingService.postData(this.UpcomingForm.value).subscribe((data: any) => {
       this.data = data;
       this.resetForm();
     })
   }
 
-  Delete(id: String | null) {
-    if (id == null) {
+  Delete(Data: any) {
+    if (Data.id == null) {
       return;
     }
-    this.UpcomingService.deleteData(id).subscribe((data: any) => {
+    this.UpcomingService.deleteData(Data.brand, Data.id).subscribe((data: any) => {
       this.data = data;
       this.resetForm();
     })
@@ -159,11 +190,14 @@ export class UpcomingComponent implements OnInit {
 
   Update() {
     this.submitted = true;
-    if (this.PostForm.invalid) {
+    if (this.UpcomingForm.invalid) {
       return;
     }
-
-    this.UpcomingService.putData(this.PostForm.value.UPC, this.PostForm.value).subscribe((data: any) => {
+    this.UpcomingForm.patchValue({
+     // imageChanged: "false",
+      //Featured: "false", 
+    }); ;
+    this.UpcomingService.putData(this.UpcomingForm.value.PostID, this.UpcomingForm.value).subscribe((data: any) => {
       this.data = data;
       this.resetForm();
     })
@@ -171,7 +205,7 @@ export class UpcomingComponent implements OnInit {
 
   resetForm() {
     this.getPosts();
-    this.PostForm.reset();
+    this.UpcomingForm.reset();
     this.clearImage();
     this.EventValue = "Save";
     this.submitted = false;
@@ -183,10 +217,13 @@ export class UpcomingComponent implements OnInit {
   }
 
   crtForm() {
-    this.PostForm.reset();
+    this.UpcomingForm.reset();
     this.EventValue = "Save";
     this.submitted = false;
     this.readonly = false;
   }
 
+  AddToCollection(id: string) {
+
+  }
 }

@@ -46,9 +46,12 @@ export class SneakerComponent implements OnInit {
     Type: new FormControl("", [Validators.required]),
     UPC: new FormControl("", [Validators.required]),
     DbImage: new FormControl(null),
+    DBImageB64: new FormControl(null),
   })
   uploadData: FormData = new FormData();
+  uploadImage: File;
   submitted = false;
+  imgChanged = false;
   readonly = true;
   isLoading = true;
   isImgLoading = true;
@@ -69,9 +72,11 @@ export class SneakerComponent implements OnInit {
       Colorway2: new FormControl(null),
       Model: new FormControl("", [Validators.required]),
       Name: new FormControl("", [Validators.required]),
-      Type: new FormControl("", [Validators.required]),
+      Type: new FormControl("", [Validators.required]), 
       UPC: new FormControl("", [Validators.required]),
       DbImage: new FormControl(null),
+      DBImageB64: new FormControl(null),
+      imageChanged : new FormControl(null),
     })
   }
 
@@ -92,30 +97,76 @@ export class SneakerComponent implements OnInit {
   }
 
   setFilename(files: FileList | null) {
+    this.imgChanged = false;
+    let oldName = this.SneakerForm.controls["DbImage"].value;
     if (files == null) {
       this.filename = "";
       return;
     }
     if (files[0]) {
       this.filename = files[0].name as any;
+      this.imgChanged = true;
+      this.SneakerForm.controls["DbImage"].setValue(this.filename);
     }
   }
- 
 
-  saveImg(files: FileList | null) {
+  setFile(event: Event | null) {
+    if (event == null) return;
+    const element = event.currentTarget as HTMLInputElement;
+    let fileList: FileList | null = element.files;
+    if (fileList) {
+      console.log("FileUpload -> files", fileList); 
+      this.imgChanged = true;
+      this.uploadImage = fileList[0];
+      this.filename = this.uploadImage.name;
+      this.SneakerForm.controls["DbImage"].setValue(fileList.item.name);
+      this.SneakerForm.value.imageChanged = true;
+    }
+  } 
+
+  /*saveImg(files: FileList | null) {
     //const file: File | any = null;
-    if (!files) {
+    if (files?.length == 0) {
+      return;
+    }
+    if (files == null) {
       return;
     }
     const reader = new FileReader();
     reader.readAsDataURL(files[0]);
     let fileToUpload = <File>files[0];
     this.uploadData.append('file', fileToUpload, fileToUpload.name);
+
     console.log(JSON.stringify(this.uploadData));
     this.uploadData.forEach((value, key) => {
       console.log(key + " " + value)
     });
 
+    this.SnkImgService
+      .upload(this.uploadData)
+      .subscribe((data: any) => {
+        this.testtext = data;
+      });
+  }*/
+
+  saveImg(upFile: File | null) { 
+    if (upFile == null) {
+      return;
+    }
+    const reader = new FileReader();
+    reader.readAsDataURL(upFile);
+    let fileToUpload = upFile;
+    this.uploadData.append('file', fileToUpload, fileToUpload.name);
+
+    console.log(JSON.stringify(this.uploadData));
+    this.uploadData.forEach((value, key) => {
+      console.log(key + " " + value)
+    });
+    this.SnkImgService
+      .uploadImage(this.uploadImage)
+      .subscribe((data: any) => {
+        this.testtext = data;
+      });
     this.SnkImgService
       .upload(this.uploadData)
       .subscribe((data: any) => {
@@ -135,12 +186,12 @@ export class SneakerComponent implements OnInit {
 
   getSneaker(id: string) {
     this.SneakerService.get(id).subscribe((snkrData: Sneaker) => {
-      this.data = snkrData;
+      this.snkrData = snkrData;
+      this.imgData = this.snkrData.dbImageB64;
     })
   }
 
-  EditData(Data: Sneaker) {
-    this.getImg(Data.dbImage);
+  EditData(Data: Sneaker) { 
     this.SneakerForm.controls["Brand"].setValue(Data.brand);
     this.SneakerForm.controls["Name"].setValue(Data.name);
     this.SneakerForm.controls["Colorway1"].setValue(Data.colorway1);
@@ -148,10 +199,16 @@ export class SneakerComponent implements OnInit {
     this.SneakerForm.controls["Model"].setValue(Data.model);
     this.SneakerForm.controls["Type"].setValue(Data.type);
     this.SneakerForm.controls["UPC"].setValue(Data.upc);
-    this.getSneaker(Data.upc);
+    this.SneakerForm.controls["DbImage"].setValue(Data.dbImage);
+    this.SneakerForm.controls["DBImageB64"].setValue(Data.dbImageB64);
+    this.SneakerForm.controls["imageChanged"].setValue(Data.imageChanged);
+
+    this.imgData = Data.dbImageB64;
+    //this.getSneaker(Data.upc);
+    this.isImgLoading = false;
     this.EventValue = "Update";
     this.readonly = false;
-  }
+  } 
 
   Save() {
     if (this.SneakerForm.invalid) {
@@ -182,12 +239,35 @@ export class SneakerComponent implements OnInit {
     if (this.SneakerForm.invalid) {
       return;
     }
+    this.SneakerForm.value.DBImageB64 = "";
+    this.SneakerForm.value.ID = "";
+    this.SneakerService.putData(this.SneakerForm.value.UPC, this.SneakerForm.value).subscribe((data: any) => {
+      this.testtext = data;
+      this.resetForm();
+    })
+  }
+
+  UpdateWimage() {
+    this.submitted = true;
+    if (this.SneakerForm.invalid) {
+      return;
+    }
+
+    var image = this.uploadImage; 
+    if (image == null) {
+      return;
+    }
+    this.saveImg(image);
 
     this.SneakerService.putData(this.SneakerForm.value.UPC, this.SneakerForm.value).subscribe((data: any) => {
       this.testtext = data;
       this.resetForm();
     })
   }
+
+
+    
+
 
   resetForm() {
     this.getSneakers();

@@ -203,8 +203,7 @@ export class SneakerComponent implements OnInit {
     this.SneakerForm.controls["DBImageB64"].setValue(Data.dbImageB64);
     this.SneakerForm.controls["imageChanged"].setValue(Data.imageChanged);
 
-    this.imgData = Data.dbImageB64;
-    //this.getSneaker(Data.upc);
+    this.imgData = Data.dbImageB64; 
     this.isImgLoading = false;
     this.EventValue = "Update";
     this.readonly = false;

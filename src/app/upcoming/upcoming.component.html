@@ -5,9 +5,72 @@
   <p *ngIf="!readonly"><a (click)="resetForm()" class="btn btn-info">Reset</a></p>
 </div>
 
+
 <div class="container">
+  <form [formGroup]="UpForm2" ng-submit="this[EventValue]()" #form="ngForm">
+    <div class="row" *ngIf="!readonly">
+      <div class="col-6">
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="brand_label1">Brand</span>
+          <input type="text" class="form-control" formControlName="Brand"
+                 placeholder="Brand" aria-label="Brand" aria-describedby="brand_label1">
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="name_label1">Name</span>
+          <input type="text" class="form-control" formControlName="Name"
+                 placeholder="Name" aria-label="Name" aria-describedby="name_label1">
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="rdate_label1">Release Date</span>
+          <input type="text" class="form-control" formControlName="ReleaseDate"
+                 placeholder="Release Date" aria-label="Release Date" aria-describedby="rdate_label1">
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="rprice_label1">Retail Price</span>
+          <input type="number" class="form-control" formControlName="RetailPrice"
+                 placeholder="$Retail" aria-label="$" aria-describedby="rprice_label1">
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="raffle_label1">Raffle   </span>
+          <input class="form-check-input mt-0" type="checkbox" formControlName="Raffle"
+                 placeholder="Raffle" aria-label="Raffle" aria-describedby="raffle_label1">
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="link1_label1">Link1</span>
+          <input type="text" class="form-control" formControlName="Link1"
+                 placeholder="Link1" aria-label="Link1" aria-describedby="link1_label1">
+        </div>
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="i_label1">ID</span>
+          <input type="text" class="form-control" formControlName="ID"
+                 placeholder="ID#" aria-label="ID#" aria-describedby="i_label1">
+        </div>   
+        <input hidden type="text" id="ImgSrc" formControlName="ImgSrc" />
+        <div class="input-group mb-3">
+          <button *ngIf="EventValue == 'Update'" (click)=" Update()" type="submit" class="btn btn-primary" [disabled]="!UpcomingForm.valid">Update</button>
+          <button *ngIf="EventValue == 'Save'" (click)=" Save()" type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="row">
+          <img src={{imgData}} class="img-thumbnail">
+        </div>
+        <div class="row"> 
+          <input type="file" class="form-control" id="file" (change)="setFile($event)">
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+
+
+
+<div class="container">
+  Form AAAAAA
   <form [formGroup]="UpcomingForm" ng-submit="this[EventValue]()" #form="ngForm">
-    <div class="row" *ngIf="!readonly"> 
+    <div class="row" *ngIf="!readonly">
       <div class="col-6">
         <div class="input-group mb-3">
           <span class="input-group-text" id="brand_label1">Brand</span>
@@ -46,12 +109,12 @@
         </div>
         <input hidden type="text" id="DbImage" formControlName="DbImage" />
         <input hidden type="text" id="DBImageB64" formControlName="DBImageB64" />
-        <input hidden type="checkbox" id="imageChanged" formControlName="imageChanged" /> 
+        <input hidden type="checkbox" id="imageChanged" formControlName="imageChanged" />
         <input hidden type="checkbox" id="Featured" formControlName="Featured" />
         <input hidden type="text" id="ImgSrc" formControlName="ImgSrc" />
         <div class="input-group mb-3">
           <button *ngIf="EventValue == 'Update'" (click)=" Update()" type="submit" class="btn btn-primary" [disabled]="!UpcomingForm.valid">Update</button>
-          <button *ngIf="EventValue == 'Save'" (click)=" Save()" type="submit" class="btn btn-primary" >Save</button>
+          <button *ngIf="EventValue == 'Save'" (click)=" Save()" type="submit" class="btn btn-primary">Save</button>
         </div>
       </div>
       <div class="col-3">
@@ -104,7 +167,7 @@
     </div>
   </form>
 </div>
- 
+
 
 
 <div>
@@ -118,9 +181,9 @@
           <div class="card-body">
             <h5 class="card-title">{{d.name}}</h5>
             <p class="card-text">Release: {{d.releaseDate}}</p>
-            <p class="card-text">Price: {{d.retailPrice}}</p>  
-            <a (click)="EditData(d)" class="btn btn-warning">Edit</a> 
-            <a (click)="AddToCollection(d.postID)" class="btn btn-primary">Got Em!</a> 
+            <p class="card-text">Price: {{d.retailPrice}}</p>
+            <a (click)="EditData(d)" class="btn btn-warning">Edit</a>
+            <a (click)="AddToCollection(d.postID)" class="btn btn-primary">Got Em!</a>
           </div>
         </div>
       </div>

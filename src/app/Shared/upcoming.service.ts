@@ -17,7 +17,8 @@ export class UpcomingService {
   }
 
   getAll() {
-    return this.http.get<any []>('/api/upcoming');
+    //return this.http.get<any[]>('/api/upcoming');
+    return this.http.get<upcomingPost []>('/api/upcoming/true');
   }
 
   get(pKey: string, rKey: string) {
@@ -25,7 +26,7 @@ export class UpcomingService {
   }
 
   postData(formData: any) {
-    return this.http.post('/api/upcoming', formData);
+    return this.http.post<boolean>('/api/upcoming', formData);
   }
 
   putData(id: string, formData: upcomingPost) { 

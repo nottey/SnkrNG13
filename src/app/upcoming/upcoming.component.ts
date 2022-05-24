@@ -28,7 +28,7 @@ export class UpcomingComponent implements OnInit {
     Brand: new FormControl("", [Validators.required]),
     Name: new FormControl("", [Validators.required]),
     ReleaseDate: new FormControl(null),
-    RetailPrice: new FormControl({ value: '' }, [Validators.required]),
+    RetailPrice: new FormControl("", [Validators.required]),
     Raffle: new FormControl({ value: '' }, [Validators.required]),
     Featured: new FormControl({ value: '' }),
     Link1: new FormControl({ value: '' }, [Validators.required]),
@@ -40,6 +40,17 @@ export class UpcomingComponent implements OnInit {
     DBImageB64: new FormControl({ value: '', disabled: true }),
     imageChanged: new FormControl(false),
   })
+  UpForm2 = new FormGroup({
+    Brand: new FormControl("", [Validators.required]),
+    Name: new FormControl("", [Validators.required]),
+    RetailPrice: new FormControl(0, [Validators.required]),
+    ImgSrc: new FormControl(""),
+    ID: new FormControl(""),
+    Link1: new FormControl(""), 
+    Raffle: new FormControl(false), 
+    ReleaseDate: new FormControl(null),
+  });
+
   uploadData: FormData;
   uploadImage: File;
   filename = '';
@@ -122,7 +133,7 @@ export class UpcomingComponent implements OnInit {
   /// End SneakerImgController Calls ///
 
   getPosts() {
-    this.UpcomingService.getAll().subscribe((postData: any[]) => {
+    this.UpcomingService.getAll().subscribe((postData: upcomingPost[]) => {
       this.isLoading = false; 
       this.allPosts = postData;
       this.postImg = postData[0].dbImageB64;
@@ -137,7 +148,17 @@ export class UpcomingComponent implements OnInit {
     })*/
   }
 
-  EditData(Data: any) { 
+  EditData(Data: any) {
+    this.UpForm2.controls["Brand"].setValue(Data.brand);
+    this.UpForm2.controls["Name"].setValue(Data.name);
+    this.UpForm2.controls["RetailPrice"].setValue(Data.retailPrice);
+    this.UpForm2.controls["ImgSrc"].setValue(Data.imgSrc);
+    this.UpForm2.controls["ID"].setValue(Data.id);
+    this.UpForm2.controls["Link1"].setValue(Data.link1); 
+    this.UpForm2.controls["Raffle"].setValue(Data.raffle);
+    this.UpForm2.controls["ReleaseDate"].setValue(Data.releaseDate); 
+
+
     this.UpcomingForm.controls["Brand"].setValue(Data.brand);
     this.UpcomingForm.controls["Name"].setValue(Data.name);
     this.UpcomingForm.controls["ReleaseDate"].setValue(Data.releaseDate);
@@ -151,10 +172,8 @@ export class UpcomingComponent implements OnInit {
     this.UpcomingForm.controls["imageChanged"].setValue(Data.imageChanged);
     this.UpcomingForm.controls["ImgSrc"].setValue(Data.imgSrc);
     this.UpcomingForm.controls["Featured"].setValue(Data.featured);
-    this.EventValue = "Update";
-    this.UpcomingService.get(Data.brand, Data.id).subscribe((data: any) => {
-      this.data = data;
-    });
+
+    this.EventValue = "Update"; 
     this.readonly = false;
   }
 
@@ -166,16 +185,15 @@ export class UpcomingComponent implements OnInit {
     this.UpcomingForm.value.Featured = "";
     this.UpcomingForm.value.Raffle = false;
     this.UpcomingForm.value.ID = this.UpcomingForm.value.PostID;
-    
-    this.uploadData = this.UpcomingForm.value;
-    if (this.UpcomingForm.invalid) {
-      return;
-    } 
+    let isValid = this.UpForm2.invalid;
 
-    this.UpcomingService.postData(this.UpcomingForm.value).subscribe((data: any) => {
+    this.UpcomingService.postData(this.UpForm2.value).subscribe((data: any) => {
       this.data = data;
-      this.resetForm();
+      //this.resetForm();
     })
+
+    this.uploadData = this.UpcomingForm.value;
+    this.resetForm();
   }
 
   Delete(Data: any) {
@@ -196,11 +214,17 @@ export class UpcomingComponent implements OnInit {
     this.UpcomingForm.patchValue({
      // imageChanged: "false",
       //Featured: "false", 
-    }); ;
-    this.UpcomingService.putData(this.UpcomingForm.value.PostID, this.UpcomingForm.value).subscribe((data: any) => {
+    });
+    this.UpcomingService.putData(this.UpForm2.value.ID, this.UpForm2.value).subscribe((data: any) => {
       this.data = data;
       this.resetForm();
     })
+
+    /*
+    this.UpcomingService.putData(this.UpcomingForm.value.PostID, this.UpcomingForm.value).subscribe((data: any) => {
+      this.data = data;
+      this.resetForm();
+    })*/
   }
 
   resetForm() {

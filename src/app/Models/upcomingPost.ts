@@ -11,4 +11,5 @@ export class upcomingPost {
   imgData: any
   dbImageB64: string
   imageChanged: string
+  type: string
 }

@@ -18,7 +18,7 @@ export class UpcomingService {
 
   getAll() {
     //return this.http.get<any[]>('/api/upcoming');
-    return this.http.get<upcomingPost []>('/api/upcoming/true');
+    return this.http.get<upcomingPost []>('/api/upcoming');
   }
 
   get(pKey: string, rKey: string) {
@@ -36,14 +36,5 @@ export class UpcomingService {
   deleteData(pKey: string, rKey: string) {
     return this.http.delete('/api/upcoming/' + pKey + '/' + rKey); 
   }
-
-  /*deleteData(formData: upcomingPost) {
-    let httpParams = new HttpParams().set('aaa', '111');
-    httpParams.set('bbb', '222');
-
-    return this.http.delete( ('/api/upcoming/' , formData);
-    //return this.http.delete('/api/upcoming/' + pKey);
-    //return this.http.delete('/api/upcoming/', { params: { pKey, rKey } });
-  }*/
 
 }

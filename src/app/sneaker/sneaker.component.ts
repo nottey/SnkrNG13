@@ -240,6 +240,7 @@ export class SneakerComponent implements OnInit {
     }
     this.SneakerForm.value.DBImageB64 = "";
     this.SneakerForm.value.ID = "";
+    this.SneakerForm.value.ManKey = this.SneakerForm.value.Brand + "_" + this.SneakerForm.value.Type;
     this.SneakerService.putData(this.SneakerForm.value.UPC, this.SneakerForm.value).subscribe((data: any) => {
       this.testtext = data;
       this.resetForm();

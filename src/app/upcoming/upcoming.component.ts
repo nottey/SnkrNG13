@@ -49,6 +49,7 @@ export class UpcomingComponent implements OnInit {
     Link1: new FormControl(""), 
     Raffle: new FormControl(false), 
     ReleaseDate: new FormControl(null),
+    Type: new FormControl(null),
   });
 
   uploadData: FormData;
@@ -133,6 +134,8 @@ export class UpcomingComponent implements OnInit {
   /// End SneakerImgController Calls ///
 
   getPosts() {
+    //Create a static/old version that while the background loads, old data is displayed
+    //??determine how long this takes to repopulate/ remove updated item until return from call
     this.UpcomingService.getAll().subscribe((postData: upcomingPost[]) => {
       this.isLoading = false; 
       this.allPosts = postData;
@@ -156,7 +159,8 @@ export class UpcomingComponent implements OnInit {
     this.UpForm2.controls["ID"].setValue(Data.id);
     this.UpForm2.controls["Link1"].setValue(Data.link1); 
     this.UpForm2.controls["Raffle"].setValue(Data.raffle);
-    this.UpForm2.controls["ReleaseDate"].setValue(Data.releaseDate); 
+    this.UpForm2.controls["ReleaseDate"].setValue(Data.releaseDate);
+    this.UpForm2.controls["Type"].setValue(Data.type); 
 
 
     this.UpcomingForm.controls["Brand"].setValue(Data.brand);

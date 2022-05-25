@@ -59,18 +59,7 @@
         <div class="row">
           <!-- label class="input-group-text" for="inputGroupFile01">Upload</label -->
           <input type="file" class="form-control" id="file" (change)="setFile($event)" >
-        </div>
-        <div class="row">
-          <!--<button type="button" class="btn btn-primary" (click)="fileInput.click()">Choose File</button>-->
-          <input hidden
-                 #fileInput
-                 type="file"
-                 id="file1"
-                 (change)="setFilename(fileInput.files)" />
-          <label>{{ filename }}</label>
-          <br /> 
-          <br />
-        </div>
+        </div> 
       </div>
     </div>
 

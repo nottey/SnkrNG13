@@ -45,7 +45,7 @@
         </div>
         <input hidden type="text" id="DbImage" formControlName="DbImage" />
         <input hidden type="text" id="DBImageB64" formControlName="DBImageB64" />
-        <input hidden type="checkbox" id="imageChanged" formControlName="imageChanged" />
+        <input hidden type="checkbox" id="imgChanged" formControlName="imgChanged" />
         <div class="input-group mb-3">
           <button *ngIf="EventValue == 'Save'" type="submit" class="btn btn-primary" [disabled]="!SneakerForm.valid">{{EventValue}}</button>
           <button *ngIf="EventValue == 'Update' && !imgChanged" (click)=" Update()" type="submit" class="btn btn-primary" [disabled]="!SneakerForm.valid">Update</button>

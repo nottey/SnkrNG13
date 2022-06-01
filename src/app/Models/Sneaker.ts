@@ -1,12 +1,17 @@
 export class Sneaker {
   brand: string
-  colorway1: string
-  colorway2: string
   model: string
   name: string
   type: string
+  id: string
   upc: string
+  colorway1: string
+  colorway2: string
+  releaseDate: string
+  purchDate: string
+  retailPrice: number
+  imgSrc: string
   dbImage: string
   dbImageB64: string
-  imageChanged: boolean
+  imgChanged: boolean
 }

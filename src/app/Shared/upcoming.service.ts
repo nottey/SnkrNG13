@@ -25,11 +25,12 @@ export class UpcomingService {
     return this.http.get('/api/upcoming/' + pKey + '/' + rKey ); 
   }
 
-  postData(formData: any) {
-    return this.http.post<boolean>('/api/upcoming', formData);
+  postData(formData: upcomingPost) { 
+    return this.http.post('/api/upcoming', formData);
   }
 
-  putData(id: string, formData: upcomingPost) { 
+  putData(id: string, formData: upcomingPost) {
+    formData.upc = id;
     return this.http.put('/api/upcoming/' + id, formData);
   }
 

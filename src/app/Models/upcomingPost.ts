@@ -1,15 +1,9 @@
-export class upcomingPost {
-  brand: string 
-  name: string
-  releaseDate: string
-  retailPrice: number
+import { Sneaker } from '../Models/Sneaker'; 
+
+export class upcomingPost extends Sneaker{  
   raffle: boolean
   featured: boolean
   link1: string
-  postID: string
-  imgSrc: string
-  imgData: any
-  dbImageB64: string
-  imageChanged: string
-  type: string
+  inCollection: boolean
+  imgData: any 
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UpcomingService } from '../Shared/upcoming.service';
+import { SneakerService } from '../Shared/sneaker.service';
 import { SnkimgService } from '../Shared/snkimg.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { upcomingPost } from '../Models/upcomingPost'; 
@@ -16,7 +17,7 @@ class ImageSnippet {
 export class UpcomingComponent implements OnInit {
   Title = "Sneaker Calendar"
 
-  constructor(private UpcomingService: UpcomingService, private SnkImgService: SnkimgService) { }
+  constructor(private UpcomingService: UpcomingService, private SneakerService: SneakerService, private SnkImgService: SnkimgService) { }
   data: any;
   allPosts: upcomingPost[];
   currPost: upcomingPost;
@@ -237,9 +238,9 @@ export class UpcomingComponent implements OnInit {
     if (this.ReleaseForm.value.ID != ""
       && this.ReleaseForm.value.Brand != ""
       && this.ReleaseForm.value.InCollection == false) {  
-        this.ReleaseForm.value.InCollection = true;
-        //this.Update();
-
+      this.ReleaseForm.value.InCollection = true;
+      var dd =  Date.now.toString();
+       // this.Update();
     }
   }
 
@@ -251,7 +252,11 @@ export class UpcomingComponent implements OnInit {
     if (Data.id != "" && Data.brand != "" && Data.inCollection == false) {
       Data.inCollection = true;
       this.SetForm(Data);
-      this.Update();
+      this.UpcomingService.AddToCollection(pstBrand, pstID, "add");
+      this.SneakerService.postData(this.ReleaseForm.value).subscribe((data: boolean) => {
+        this.submitted = data;
+        this.resetForm();
+      })
     }
   }
 

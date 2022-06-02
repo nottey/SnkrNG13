@@ -34,6 +34,10 @@ export class UpcomingService {
     return this.http.put('/api/upcoming/' + id, formData);
   }
 
+  AddToCollection(pKey: string, rKey: string, add:string) {
+    return this.http.put('/api/upcoming/' + pKey + '/' + rKey + '/' + add ,'');
+  }
+
   deleteData(pKey: string, rKey: string) {
     return this.http.delete('/api/upcoming/' + pKey + '/' + rKey); 
   }

@@ -14,4 +14,9 @@ export class Sneaker {
   dbImage: string
   dbImageB64: string
   imgChanged: boolean
+  raffle: boolean
+  featured: boolean
+  link1: string
+  inCollection: boolean
+  imgData: any
 }

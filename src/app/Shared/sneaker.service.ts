@@ -27,6 +27,10 @@ export class SneakerService {
     return this.http.get<Sneaker>('/api/sneakers/' + id);
   }
 
+  getByKey(pKey: String, rKey: String) {
+    return this.http.get<Sneaker>('/api/sneakers/' + pKey + '/' + rKey);
+  }
+
   postData(formData: any) {
     return this.http.post<boolean>('/api/sneakers', formData);
   }

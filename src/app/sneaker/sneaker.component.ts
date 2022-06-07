@@ -68,14 +68,17 @@ export class SneakerComponent implements OnInit {
   isImgLoading = true;
   EventValue: String = "Save";
   testtext: any;
-  selectedFile!: ImageSnippet;
+  selectedFile!: ImageSnippet; 
 
 
   ngOnInit() {
     this.isLoading = true; 
     this.getSneakers(); 
     this.typeSelect = ["Baskball", "Casual", "Running", "Hiking"];
-    this.uploadData = new FormData();
+    this.uploadData = new FormData(); 
+
+    
+
   }
 
   /// Begin SneakerImgController Calls ///
@@ -164,6 +167,7 @@ export class SneakerComponent implements OnInit {
 
   /// Begin SneakerController Calls ///
   getSneakers() {
+    this.isLoading = true;
     this.SneakerService.getAll().subscribe((data: Sneaker[]) => {
       this.isLoading = false;
       this.snkrList = data;
@@ -172,6 +176,7 @@ export class SneakerComponent implements OnInit {
         if (value.inCollection == true)
           this.collectionList.push(value); //.splice(index, 1);
       })
+      this.isLoading = false;
     })
   }
 
@@ -181,8 +186,9 @@ export class SneakerComponent implements OnInit {
       this.imgData = this.snkrData.dbImageB64;
     }) 
   }
-  getSneakerbyKey(pKey: string, rKey:string) {
-    this.SneakerService.getByKey(pKey,rKey).subscribe((snkrData: Sneaker) => {
+  getSneakerbyKey(pKey: string, rKey: string) { 
+    //this.SneakerService.getByKey(pKey,rKey).subscribe((snkrData: Sneaker) => {
+    this.SneakerService.getSneaker(pKey, rKey,true).subscribe((snkrData: Sneaker) => {
       this.snkrData = snkrData;
       this.imgData = this.snkrData.dbImageB64;
     })
@@ -246,17 +252,18 @@ export class SneakerComponent implements OnInit {
     }) 
   }
 
-  AddToCollectionUpdate() {
+  AddToCollection(sneaker: Sneaker) {
     // Gathers UPC for selected post and adds to sneaker collection
     // and updates current post to reflect it was added
-    var pstID = this.SneakerForm.value.ID;
-    var pstBrand = this.SneakerForm.value.Brand;
-    var inColl = this.SneakerForm.value.InCollection;
-    if (this.SneakerForm.value.ID != ""
-      && this.SneakerForm.value.Brand != "") {
-      this.SneakerForm.value.InCollection = ((inColl == false) ? true : false);
-      this.Update();
-    }
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+
+    this.SetForm(sneaker);
+    if(sneaker.purchDate == "")
+      sneaker.purchDate = mm + '/' + dd + '/' + yyyy; 
+    this.Update(); 
   }
 
   replaceUpdated(updated: Sneaker) {
@@ -309,7 +316,7 @@ export class SneakerComponent implements OnInit {
 
 
   resetForm() {
-    //this.getSneakers();
+    this.getSneakers();
     this.SneakerForm.reset();
     this.clearImage();
     this.EventValue = "Save";

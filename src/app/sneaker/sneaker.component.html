@@ -1,5 +1,6 @@
 <div class="container">
   <h1>Sneaker Box <span class="badge bg-primary">SNKRS</span></h1>
+  <p>{{todayDate | date:'shortDate'}}</p>
   <p *ngIf="readonly"><a (click)="crtForm()" class="btn btn-info">Add To Collection!</a></p>
   <p *ngIf="!readonly"><a (click)="resetForm()" class="btn btn-info">Reset</a></p>
 </div>
@@ -151,7 +152,7 @@
             <p class="card-text">Release: {{d.releaseDate}}</p>
             <p class="card-text">Price: {{d.retailPrice}}</p>
             <a (click)="EditData(d)" class="btn btn-warning">Edit</a>
-            <a class="btn btn-primary">Got Em!</a>
+            <a (click)="AddToCollection(d)" class="btn btn-primary">Got Em!</a>
           </div>
         </div>
       </div>

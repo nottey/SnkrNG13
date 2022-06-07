@@ -23,8 +23,16 @@ export class SneakerService {
     return this.http.get<Sneaker[]>('/api/sneakers');
   }
 
+  getAllwImages(getImage: boolean) {
+    return this.http.get<Sneaker[]>('/api/sneakers?b_getImages=' + getImage );
+  }
+
   get(id: String) {
-    return this.http.get<Sneaker>('/api/sneakers/' + id);
+    return this.http.get<Sneaker>('/api/sneakers?id=' + id);
+  }
+
+  getSneaker(pKey: String, rKey: String, getImage: boolean) {
+    return this.http.get<Sneaker>('/api/sneakers?pKey=' + pKey + '&rKey=' + rKey + '&getImages=' + getImage );
   }
 
   getByKey(pKey: String, rKey: String) {
@@ -36,7 +44,7 @@ export class SneakerService {
   }
 
   putData(id: String, formData: any) {
-    return this.http.put('/api/sneakers/' + id, formData);
+    return this.http.put('/api/sneakers/', formData);
   }
 
   deleteData(upc: String) {

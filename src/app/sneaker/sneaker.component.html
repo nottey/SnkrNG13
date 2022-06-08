@@ -1,6 +1,5 @@
 <div class="container">
   <h1>Sneaker Box <span class="badge bg-primary">SNKRS</span></h1>
-  <p>{{todayDate | date:'shortDate'}}</p>
   <p *ngIf="readonly"><a (click)="crtForm()" class="btn btn-info">Add To Collection!</a></p>
   <p *ngIf="!readonly"><a (click)="resetForm()" class="btn btn-info">Reset</a></p>
 </div>
@@ -45,8 +44,8 @@
           <input type="text" class="form-control" formControlName="Link1"
                  placeholder="Link1" aria-label="Link1" aria-describedby="link1_label1">
         </div>
-          
-        <input hidden type="checkbox" id="imgChanged"  />
+
+        <input hidden type="checkbox" id="imgChanged" />
 
         <div class="input-group mb-3">
           <button *ngIf="EventValue == 'Save'" type="submit" class="btn btn-primary" [disabled]="!SneakerForm.valid">{{EventValue}}</button>
@@ -99,7 +98,7 @@
 
   </form>
 </div>
- 
+
 <div>
   <form>
     <div class="container-fluid">
@@ -143,7 +142,7 @@
   <h2> Upcoming releases! </h2>
   <div class="container-fluid">
     <div class="row row-cols-1 row-cols-md-3 g-4">
-      <div *ngFor="let d of snkrList; let i = index" class="col-2">
+      <div *ngFor="let d of SnkrImgList; let i = index" class="col-2">
         <!-- <div class="card" style="width: 18rem;" *ngFor="let d of allPosts; let i = index">-->
         <div class="card text-white bg-secondary mb-3" style="width: 18rem;">
           <img src={{d.dbImageB64}} class="card-img-top" alt={{d.name}}>
@@ -161,7 +160,7 @@
 </div>
 
 
-
+<!--
 <div class="card-group">
   <div *ngFor="let d of snkrList; let i = index"
        class="card text-white bg-secondary mb-3" style="width: 18rem;">
@@ -174,6 +173,7 @@
     </div>
   </div>
 </div>
+  -->
 
 <!-- div class="container">
   <button type="button" class="btn btn-primary" (click)="fileInput.click()">Choose File</button>

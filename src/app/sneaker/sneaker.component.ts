@@ -4,12 +4,7 @@ import { SneakerService } from '../Shared/sneaker.service';
 import { SnkimgService } from '../Shared/snkimg.service';
 import { UpcomingService } from '../Shared/upcoming.service';
 import { Sneaker } from '../Models/Sneaker';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http'; 
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AppComponent } from '../app.component';
+import { FormGroup, FormControl, Validators } from '@angular/forms';  
 
 
 class ImageSnippet {
@@ -26,15 +21,16 @@ export class SneakerComponent implements OnInit {
   Title = "SneakerPage"
 
   constructor(private SneakerService: SneakerService, private SnkImgService: SnkimgService, private UpcomingService: UpcomingService , http: HttpClient) {  
-    http.get<Sneaker[]>('/sneaker').subscribe(result => {
+    /*http.get<Sneaker[]>('/sneaker').subscribe(result => {
       this.data = result;
-    }, error => console.error(error));
+    }, error => console.error(error));*/
   }
 
   data: any;
   snkrData: Sneaker;
   snkrList: Sneaker[];
   collectionList: Sneaker[];
+  SnkrImgList: Sneaker[];
   filename = "blank";
   imgData: any;
   imgListData: any;
@@ -73,22 +69,16 @@ export class SneakerComponent implements OnInit {
 
   ngOnInit() {
     this.isLoading = true; 
-    this.getSneakers(); 
+    this.getSneakers();
+    this.getSneakerWImages(true);
     this.typeSelect = ["Baskball", "Casual", "Running", "Hiking"];
     this.uploadData = new FormData(); 
 
-    
+    environment
 
   }
 
   /// Begin SneakerImgController Calls ///
-  getImages() {
-    this.SnkImgService.getAllImages().subscribe((data: any[]) => {
-      this.imgListData = data;
-      this.imgData = this.imgListData[0];
-    })
-  }
-
   getImg(id:string) {
     this.isImgLoading = true;
     this.SnkImgService.getImage(id).subscribe((data: any[]) => {
@@ -118,7 +108,9 @@ export class SneakerComponent implements OnInit {
       console.log("FileUpload -> files", fileList);  
       this.uploadImage = fileList[0];
       this.filename = this.uploadImage.name;
-      this.SneakerForm.controls["ImgSrc"].setValue(fileList.item.name);
+      var validFilename = !/[^a-z0-9_.@()-]/i.test(this.filename);
+      //this.filename = this.filename.replace(/[/\\?%*:|"<>]/g, '-');
+      this.SneakerForm.controls["ImgSrc"].setValue(this.filename);
       this.newImage = true; 
     }
   } 
@@ -163,7 +155,7 @@ export class SneakerComponent implements OnInit {
       });
   }
   /// End SneakerImgController Calls ///
-
+    
 
   /// Begin SneakerController Calls ///
   getSneakers() {
@@ -177,6 +169,12 @@ export class SneakerComponent implements OnInit {
           this.collectionList.push(value); //.splice(index, 1);
       })
       this.isLoading = false;
+    })
+  }
+
+  getSneakerWImages(getimages: boolean) { 
+    this.SneakerService.getAllwImages(getimages).subscribe((data: Sneaker[]) => { 
+      this.SnkrImgList = data; 
     })
   }
 
@@ -260,9 +258,8 @@ export class SneakerComponent implements OnInit {
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = today.getFullYear();
 
-    this.SetForm(sneaker);
-    if(sneaker.purchDate == "")
-      sneaker.purchDate = mm + '/' + dd + '/' + yyyy; 
+    this.SetForm(sneaker); 
+    sneaker.purchDate = mm + '/' + dd + '/' + yyyy; 
     this.Update(); 
   }
 
@@ -270,9 +267,11 @@ export class SneakerComponent implements OnInit {
     this.snkrList.forEach((value, index) => {
       if (value.id == updated.id) this.snkrList.splice(index, 1);
     })
+    this.isLoading = true;
     // Sets -> this.currPost
     this.getSneaker(updated.upc);
     this.snkrList.push(this.snkrData);
+    this.isLoading = false;
   }
    
   deleteData(upc : string) {

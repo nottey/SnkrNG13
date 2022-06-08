@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Sneaker } from '../Models/Sneaker';
-
+import { Sneaker } from '../Models/Sneaker'; 
 @Injectable({
   providedIn: 'root'
 })
@@ -14,17 +13,13 @@ export class SneakerService {
     })
   }
 
- /*getAll(){
-    return this.http.get<Sneaker[]>('/api/snkr');
-  }
- */
-
-  getAll() {
-    return this.http.get<Sneaker[]>('/api/sneakers');
-  }
+   getAll() { 
+    // return this.http.get<Sneaker[]>('https://snkrappbackend.azurewebsites.net/api/sneakers/');
+     return this.http.get<Sneaker[]>('/api/sneakers');
+    } 
 
   getAllwImages(getImage: boolean) {
-    return this.http.get<Sneaker[]>('/api/sneakers?b_getImages=' + getImage );
+    return this.http.get<Sneaker[]>('/api/sneakers?getImages=' + getImage );
   }
 
   get(id: String) {

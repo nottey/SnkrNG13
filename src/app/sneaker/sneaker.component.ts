@@ -73,11 +73,10 @@ export class SneakerComponent implements OnInit {
     this.getSneakerWImages(true);
     this.typeSelect = ["Baskball", "Casual", "Running", "Hiking"];
     this.uploadData = new FormData(); 
-
-    environment
-
+     
   }
 
+ 
   /// Begin SneakerImgController Calls ///
   getImg(id:string) {
     this.isImgLoading = true;

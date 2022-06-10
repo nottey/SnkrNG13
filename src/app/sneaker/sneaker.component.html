@@ -48,7 +48,7 @@
         <input hidden type="checkbox" id="imgChanged" />
 
         <div class="input-group mb-3">
-          <button *ngIf="EventValue == 'Save'" type="submit" class="btn btn-primary" [disabled]="!SneakerForm.valid">{{EventValue}}</button>
+          <button *ngIf="EventValue == 'Save'"  (click)=" Save()" type="submit" class="btn btn-primary" [disabled]="!SneakerForm.valid">{{EventValue}}</button>
           <button *ngIf="EventValue == 'Update'" (click)=" Update()" type="submit" class="btn btn-primary" [disabled]="!SneakerForm.valid">Update</button>
         </div>
       </div>
@@ -105,7 +105,12 @@
       <div class="spinner-grow text-success" role="status" *ngIf="isLoading">
         <span class="visually-hidden">Loading...</span>
       </div>
-      <table class="table table-striped table-hover" aria-labelledby="tableLabel">
+
+      <p>
+        <a *ngIf="tableType == 'Name'" (click)="chgTableType('Base')" class="btn btn-info">Base Table</a>
+        <a *ngIf="tableType == 'Base'" (click)="chgTableType('Name')" class="btn btn-info">Name Table</a>
+      </p>
+      <table *ngIf="tableType == 'Base'" class="table table-striped table-hover" aria-labelledby="tableLabel">
         <thead>
           <tr>
             <th scope="col">Brand</th>
@@ -128,6 +133,31 @@
             <td>{{d.colorway2}}</td>
             <td>{{d.type}}</td>
             <td>{{d.upc}}</td>
+            <td><a *ngIf="!isImgLoading" (click)="EditData(d)" class="btn btn-warning">Edit</a></td>
+            <td><a (click)="Delete(d.upc)" class="btn btn-danger">Delete</a></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table *ngIf="tableType == 'Name'" class="table table-striped table-hover" aria-labelledby="tableLabel">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Brand</th>
+            <th scope="col">Model</th>
+            <th scope="col">Released</th>
+            <th scope="col">Purchased</th>
+            <th scope="col" colspan="2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let d of collectionList; let i = index"
+              data-toggle="collapse" [attr.data-target]="'#img' + i" class="accordion-toggle">
+            <td>{{d.name}}</td>
+            <td>{{d.brand}}</td>
+            <td>{{d.model}}</td>
+            <td>{{d.releaseDate}}</td>
+            <td>{{d.purchDate}}</td> 
             <td><a (click)="EditData(d)" class="btn btn-warning">Edit</a></td>
             <td><a (click)="Delete(d.upc)" class="btn btn-danger">Delete</a></td>
           </tr>
@@ -138,54 +168,56 @@
 </div>
 
 
-<div>
-  <h2> Upcoming releases! </h2>
-  <div class="container-fluid">
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-      <div *ngFor="let d of SnkrImgList; let i = index" class="col-2">
-        <!-- <div class="card" style="width: 18rem;" *ngFor="let d of allPosts; let i = index">-->
-        <div class="card text-white bg-secondary mb-3" style="width: 18rem;">
-          <img src={{d.dbImageB64}} class="card-img-top" alt={{d.name}}>
-          <div class="card-body">
-            <h5 class="card-title">{{d.name}}</h5>
-            <p class="card-text">Release: {{d.releaseDate}}</p>
-            <p class="card-text">Price: {{d.retailPrice}}</p>
-            <a (click)="EditData(d)" class="btn btn-warning">Edit</a>
-            <a (click)="AddToCollection(d)" class="btn btn-primary">Got Em!</a>
+ 
+
+    <div>
+      <h2> Upcoming releases! </h2>
+      <div class="container-fluid">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+          <div *ngFor="let d of findSneakersWithImages( SnkrImgList); let i = index" class="col-2">
+            <!-- <div *ngFor="let d of SnkrImgList; let i = index" class="col-2"> -->
+            <!-- <div class="card" style="width: 18rem;" *ngFor="let d of allPosts; let i = index">-->
+            <div class="card text-white bg-secondary mb-3" style="width: 18rem;">
+              <img src={{d.dbImageB64}} class="card-img-top img-thumbnail" alt={{d.name}}>
+              <div class="card-body">
+                <h5 class="card-title">{{d.name}}</h5>
+                <p class="card-text">Release: {{d.releaseDate}}</p>
+                <p class="card-text">Price: {{d.retailPrice}}</p>
+                <a (click)="EditData(d)" class="btn btn-warning">Edit</a>
+                <a (click)="AddToCollection(d)" class="btn btn-primary">Got Em!</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
 
-<!--
-<div class="card-group">
-  <div *ngFor="let d of snkrList; let i = index"
-       class="card text-white bg-secondary mb-3" style="width: 18rem;">
-    <img src={{d.dbImageB64}} class="card-img-top" alt={{d.name}}>
-    <div class="card-body">
-      <h5 class="card-title">{{d.name}}</h5>
-      <p class="card-text">Release: {{d.releaseDate}}</p>
-      <p class="card-text">Price: {{d.retailPrice}}</p>
-      <a href="#" class="btn btn-primary">Go somewhere</a>
+    <!--
+    <div class="card-group">
+      <div *ngFor="let d of snkrList; let i = index"
+           class="card text-white bg-secondary mb-3" style="width: 18rem;">
+        <img src={{d.dbImageB64}} class="card-img-top" alt={{d.name}}>
+        <div class="card-body">
+          <h5 class="card-title">{{d.name}}</h5>
+          <p class="card-text">Release: {{d.releaseDate}}</p>
+          <p class="card-text">Price: {{d.retailPrice}}</p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-  -->
-
-<!-- div class="container">
-  <button type="button" class="btn btn-primary" (click)="fileInput.click()">Choose File</button>
-  <button type="button" (click)="clearImage()" class="btn btn-info" [disabled]="!filename">Reset Image</button>
-  <input hidden
-         #fileInput
-         type="file"
-         id="file"
-         (change)="setFilename(fileInput.files)" />
-  <p class="fw-bold bd-highlight">File: {{ filename }} </p>
-  <br />
-  <button type="button" class="btn btn-success" (click)="saveImg(fileInput.files)" [disabled]="!filename">Save</button>
-  <br />
-</div>
--->
+      -->
+    <!-- div class="container">
+      <button type="button" class="btn btn-primary" (click)="fileInput.click()">Choose File</button>
+      <button type="button" (click)="clearImage()" class="btn btn-info" [disabled]="!filename">Reset Image</button>
+      <input hidden
+             #fileInput
+             type="file"
+             id="file"
+             (change)="setFilename(fileInput.files)" />
+      <p class="fw-bold bd-highlight">File: {{ filename }} </p>
+      <br />
+      <button type="button" class="btn btn-success" (click)="saveImg(fileInput.files)" [disabled]="!filename">Save</button>
+      <br />
+    </div>
+    -->

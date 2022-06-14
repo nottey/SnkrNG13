@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SneakerService } from '../Shared/sneaker.service';
-import { SnkimgService } from '../Shared/snkimg.service';
-import { UpcomingService } from '../Shared/upcoming.service';
+import { SnkimgService } from '../Shared/snkimg.service'; 
 import { Sneaker } from '../Models/Sneaker';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -20,10 +19,7 @@ class ImageSnippet {
 export class SneakerComponent implements OnInit {
   Title = "SneakerPage"
 
-  constructor(private SneakerService: SneakerService, private SnkImgService: SnkimgService, private UpcomingService: UpcomingService, http: HttpClient) {
-    /*http.get<Sneaker[]>('/sneaker').subscribe(result => {
-      this.data = result;
-    }, error => console.error(error));*/
+  constructor(private SneakerService: SneakerService, private SnkImgService: SnkimgService, http: HttpClient) {
   }
 
   data: any;
@@ -32,8 +28,7 @@ export class SneakerComponent implements OnInit {
   collectionList: Sneaker[];
   SnkrImgList: Sneaker[];
   filename = "blank";
-  imgData: any;
-  imgListData: any;
+  imgData: any; 
   typeSelect: any;
   tableType: String = "Base";
 
@@ -63,8 +58,7 @@ export class SneakerComponent implements OnInit {
   newImage = false;
   isLoading = true;
   isImgLoading = true;
-  EventValue: String = "Save";
-  testtext: any;
+  EventValue: String = "Save"; 
   selectedFile!: ImageSnippet;
 
 
@@ -85,31 +79,16 @@ export class SneakerComponent implements OnInit {
     if (fileList) {
       console.log("FileUpload -> files", fileList);
       this.uploadImage = fileList[0];
-      this.filename = this.uploadImage.name;
-      var validFilename = !/[^a-z0-9_.@()-]/i.test(this.filename);
-      //this.filename = this.filename.replace(/[/\\?%*:|"<>]/g, '-');
+      this.filename = this.uploadImage.name; 
       this.SneakerForm.controls["ImgSrc"].setValue(this.filename);
       this.newImage = true;
     }
   }
    
-  saveImgFile(currFile: File | null) {
-    if (!currFile) {
-      return;
-    }
-    const reader = new FileReader();
-    reader.readAsDataURL(currFile);
-    let fileToUpload = <File>currFile;
-    this.uploadData.append('file', fileToUpload, fileToUpload.name);
-    console.log(JSON.stringify(this.uploadData));
-    this.uploadData.forEach((value, key) => {
-      console.log(key + " " + value)
-    });
-
+  saveImgFile() {  
     this.SnkImgService
       .uploadImage(this.uploadImage)
-      .subscribe((data: any) => {
-        this.testtext = data;
+      .subscribe((data: any) => { 
       });
   }
   //#endregion 
@@ -158,7 +137,7 @@ export class SneakerComponent implements OnInit {
     }
 
     if (this.newImage)
-      this.saveImgFile(this.uploadImage);
+      this.saveImgFile();
     this.FixBools();
     var pKey = this.SneakerForm.value.Brand;
     var rKey = this.SneakerForm.value.UPC;
@@ -167,15 +146,14 @@ export class SneakerComponent implements OnInit {
       this.resetForm();
     })
     // Sets snkrData
-    this.getSneakerbyKey(pKey, rKey);
+    //this.getSneakerbyKey(pKey, rKey);
   }
 
   Delete(upc: string) {
     if (upc == null) {
       return;
     }
-    this.SneakerService.deleteData(upc).subscribe((data: any) => {
-      this.testtext = data;
+    this.SneakerService.deleteData(upc).subscribe((data: any) => { 
       this.resetForm();
     })
     var snkr = new Sneaker;
@@ -204,28 +182,12 @@ export class SneakerComponent implements OnInit {
     }
     this.FixBools();
     if (this.newImage)
-      this.saveImgFile(this.uploadImage);
+      this.saveImgFile();
     if (this.SneakerForm.value.IsNew == null)
       this.SneakerForm.value.IsNew = false;
 
-    this.SneakerService.putData(this.SneakerForm.value.UPC, this.SneakerForm.value).subscribe((data: any) => {
-      this.testtext = data;
+    this.SneakerService.putData(this.SneakerForm.value.UPC, this.SneakerForm.value).subscribe((data: any) => { 
       this.replaceUpdated(data);
-      this.resetForm();
-    })
-  }
-
-  UpdateWimage() {
-    this.submitted = true;
-    if (this.SneakerForm.invalid) {
-      return;
-    }
-    this.FixBools();
-    if (this.newImage)
-      this.saveImgFile(this.uploadImage);
-
-    this.SneakerService.putData(this.SneakerForm.value.UPC, this.SneakerForm.value).subscribe((data: any) => {
-      this.testtext = data;
       this.resetForm();
     })
   }

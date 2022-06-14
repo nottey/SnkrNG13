@@ -18,6 +18,31 @@ steps:
 - script: |
     npm install
     npm run build -- --prod
+
 - publish: dist
   artifact: dist
   displayName: 'npm install and build'
+
+  - task: ArchiveFiles@2
+    displayName: 'Archive files'
+    inputs:
+      rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/snkr-app-ng13/'
+      includeRootFolder: false
+      archiveType: zip
+      archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      replaceExistingArchive: true
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+          ArtifactName: 'drop'
+          publishLocation: 'Container'
+
+- task: AzureWebApp@1
+    displayName: 'Deploy App Service'
+    inputs:
+      azureSubscription: 'NottageDev'
+      appType: 'Linux'
+      appName: 'nsnkr'
+      package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
+      runtimeStack: 'NODE|16-lts'

@@ -5,6 +5,7 @@ import { SnkimgService } from '../Shared/snkimg.service';
 import { Sneaker } from '../Models/Sneaker';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
+import { environment } from '../../environments/environment';
 
 class ImageSnippet {
   constructor(public src: string, public file: File) { }
@@ -20,6 +21,7 @@ export class SneakerComponent implements OnInit {
   Title = "SneakerPage"
 
   constructor(private SneakerService: SneakerService, private SnkImgService: SnkimgService, http: HttpClient) {
+    console.log("Sneaker Service API: " + environment.snkrAPI);
   }
 
   data: any;

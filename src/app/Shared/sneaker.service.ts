@@ -23,7 +23,7 @@ export class SneakerService {
    } 
 
   getAllwImages(getImage: boolean) { 
-    return this.http.get<Sneaker[]>(this.snkrAPI + '? getImages = ' + getImage);
+    return this.http.get<Sneaker[]>(this.snkrAPI + '?getImages=' + getImage);
   }
 
   get(id: String) {

@@ -2,6 +2,10 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.4.
 
+## Nottage
+As of June 2022. This will be the base for the SNKR app.  Code works but needs to be cleaned.  Looking to seperate API from angular.  Should be able to use angular and point to API and app will work as expected.
+
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.

@@ -1,12 +1,5 @@
-export class upcomingPost {
-  brand: string 
-  name: string
-  releaseDate: string
-  retailPrice: number
-  raffle: boolean
-  featured: boolean
-  link1: string
-  ID: string
-  imgSrc: string
-  imgData: any
+import { Sneaker } from '../Models/Sneaker'; 
+
+export class upcomingPost extends Sneaker{  
+
 }

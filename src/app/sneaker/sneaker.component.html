@@ -29,89 +29,184 @@
                  placeholder="Name" aria-label="Name" aria-describedby="name_label1">
         </div>
         <div class="input-group mb-3">
-          <span class="input-group-text" id="colorway1_label1">Colorway1</span>
+          <span class="input-group-text" id="colorway1_label1">Colorway 1</span>
           <input type="text" class="form-control" formControlName="Colorway1"
-                 placeholder="Colorway1" aria-label="Colorway1" aria-describedby="colorway1_label1">
+                 placeholder="Colorway 1" aria-label="Colorway 1" aria-describedby="colorway1_label1">
         </div>
         <div class="input-group mb-3">
-          <span class="input-group-text" id="colorway2_label1">Colorway2</span>
+          <span class="input-group-text" id="colorway2_label1">Colorway 2</span>
           <input type="text" class="form-control" formControlName="Colorway2"
-                 placeholder="Colorway2" aria-label="Colorway2" aria-describedby="colorway2_label1">
+                 placeholder="Colorway 2" aria-label="Colorway 2" aria-describedby="colorway2_label1">
         </div>
+
         <div class="input-group mb-3">
-          <span class="input-group-text" id="upc_label1">UPC</span>
-          <input type="text" class="form-control" formControlName="UPC"
-                 placeholder="UPC" aria-label="UPC" aria-describedby="upc_label1">
+          <span class="input-group-text" id="link1_label1">Link1</span>
+          <input type="text" class="form-control" formControlName="Link1"
+                 placeholder="Link1" aria-label="Link1" aria-describedby="link1_label1">
         </div>
+
+        <input hidden type="checkbox" id="imgChanged" />
+
         <div class="input-group mb-3">
-          <button type="submit" class="btn btn-primary" [disabled]="!SneakerForm.valid">{{EventValue}}</button>
+          <button *ngIf="EventValue == 'Save'"  (click)=" Save()" type="submit" class="btn btn-primary" [disabled]="!SneakerForm.valid">{{EventValue}}</button>
+          <button *ngIf="EventValue == 'Update'" (click)=" Update()" type="submit" class="btn btn-primary" [disabled]="!SneakerForm.valid">Update</button>
         </div>
       </div>
-      <div class="col-3">
+      <div class="col-4">
         <div class="row">
+
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="id_label1">ID</span>
+            <input type="text" class="form-control" formControlName="ID"
+                   placeholder="721356" aria-label="UPC" aria-describedby="id_label1">
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="upc_label1">UPC</span>
+            <input type="text" class="form-control" formControlName="UPC"
+                   placeholder="UPC" aria-label="UPC" aria-describedby="upc_label1">
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="rdate_label1">Released</span>
+            <input type="text" class="form-control" formControlName="ReleaseDate"
+                   placeholder="12/01/22" aria-label="Release Date" aria-describedby="rdate_label1">
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="pdate_label1">Purchased</span>
+            <input type="text" class="form-control" formControlName="PurchDate"
+                   placeholder="12/01/22" aria-label="Purchase Date" aria-describedby="pdate_label1">
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="rprice_label1">Retail Price</span>
+            <input type="number" class="form-control" formControlName="RetailPrice"
+                   placeholder="$Retail" aria-label="$" aria-describedby="rprice_label1">
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="raffle_label1">Raffle   </span>
+            <input class="form-check-input mt-0" type="checkbox" formControlName="Raffle"
+                   placeholder="Raffle" aria-label="Raffle" aria-describedby="raffle_label1">
+          </div>
+
           <img src={{imgData}} class="img-thumbnail">
         </div>
         <div class="row">
           <!-- label class="input-group-text" for="inputGroupFile01">Upload</label -->
-          <input type="file" class="form-control" id="file">
-        </div>
-        <div class="row">
-          <button type="button" class="btn btn-primary" (click)="fileInput.click()">Choose File</button>
-          <input hidden
-                 #fileInput
-                 type="file"
-                 id="file1"
-                 (change)="setFilename(fileInput.files)" />
-          <label>{{ filename }}</label>
-          <br />
-          <button type="button" class="btn btn-success" (click)="saveImg(fileInput.files)">Save Image</button>
-          <br />
+          <input type="file" class="form-control" id="file" (change)="setFile($event)">
         </div>
       </div>
     </div>
 
-</form>
+  </form>
+</div>
+
+<div>
+  <form>
+    <div class="container-fluid">
+      <div class="spinner-grow text-success" role="status" *ngIf="isLoading">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+
+      <p>
+        <a *ngIf="tableType == 'Name'" (click)="chgTableType('Base')" class="btn btn-info">Base Table</a>
+        <a *ngIf="tableType == 'Base'" (click)="chgTableType('Name')" class="btn btn-info">Name Table</a>
+      </p>
+      <table *ngIf="tableType == 'Base'" class="table table-striped table-hover" aria-labelledby="tableLabel">
+        <thead>
+          <tr>
+            <th scope="col">Brand</th>
+            <th scope="col">Name</th>
+            <th scope="col">Model</th>
+            <th scope="col">Color</th>
+            <th scope="col">Color</th>
+            <th scope="col">Type</th>
+            <th scope="col">UPC</th>
+            <th scope="col" colspan="2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let d of collectionList; let i = index"
+              data-toggle="collapse" [attr.data-target]="'#img' + i" class="accordion-toggle">
+            <td>{{d.brand}}</td>
+            <td>{{d.name}}</td>
+            <td>{{d.model}}</td>
+            <td>{{d.colorway1}}</td>
+            <td>{{d.colorway2}}</td>
+            <td>{{d.type}}</td>
+            <td>{{d.upc}}</td>
+            <td><a *ngIf="!isImgLoading" (click)="EditData(d)" class="btn btn-warning">Edit</a></td>
+            <td><a (click)="Delete(d.upc)" class="btn btn-danger">Delete</a></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table *ngIf="tableType == 'Name'" class="table table-striped table-hover" aria-labelledby="tableLabel">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Brand</th>
+            <th scope="col">Model</th>
+            <th scope="col">Released</th>
+            <th scope="col">Purchased</th>
+            <th scope="col" colspan="2">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let d of collectionList; let i = index"
+              data-toggle="collapse" [attr.data-target]="'#img' + i" class="accordion-toggle">
+            <td>{{d.name}}</td>
+            <td>{{d.brand}}</td>
+            <td>{{d.model}}</td>
+            <td>{{d.releaseDate}}</td>
+            <td>{{d.purchDate}}</td> 
+            <td><a (click)="EditData(d)" class="btn btn-warning">Edit</a></td>
+            <td><a (click)="Delete(d.upc)" class="btn btn-danger">Delete</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </form>
 </div>
 
 
+ 
+
     <div>
-      <form>
-        <div class="container-fluid">
-          <div class="spinner-grow text-success" role="status" *ngIf="isLoading">
-            <span class="visually-hidden">Loading...</span>
+      <h2> Upcoming releases! </h2>
+      <div class="container-fluid">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+          <div *ngFor="let d of findSneakersWithImages( SnkrImgList); let i = index" class="col-2">
+            <!-- <div *ngFor="let d of SnkrImgList; let i = index" class="col-2"> -->
+            <!-- <div class="card" style="width: 18rem;" *ngFor="let d of allPosts; let i = index">-->
+            <div class="card text-white bg-secondary mb-3" style="width: 18rem;">
+              <img src={{d.dbImageB64}} class="card-img-top img-thumbnail" alt={{d.name}}>
+              <div class="card-body">
+                <h5 class="card-title">{{d.name}}</h5>
+                <p class="card-text">Release: {{d.releaseDate}}</p>
+                <p class="card-text">Price: {{d.retailPrice}}</p>
+                <a (click)="EditData(d)" class="btn btn-warning">Edit</a>
+                <a (click)="AddToCollection(d)" class="btn btn-primary">Got Em!</a>
+              </div>
+            </div>
           </div>
-          <table class="table table-striped table-hover" aria-labelledby="tableLabel">
-            <thead>
-              <tr>
-                <th scope="col">Brand</th>
-                <th scope="col">Name</th>
-                <th scope="col">Model</th>
-                <th scope="col">Color</th>
-                <th scope="col">Color</th>
-                <th scope="col">Type</th>
-                <th scope="col">UPC</th>
-                <th scope="col" colspan="2">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let d of snkrList; let i = index"
-                  data-toggle="collapse" [attr.data-target]="'#img' + i" class="accordion-toggle">
-                <td>{{d.brand}}</td>
-                <td>{{d.name}}</td>
-                <td>{{d.model}}</td>
-                <td>{{d.colorway1}}</td>
-                <td>{{d.colorway2}}</td>
-                <td>{{d.type}}</td>
-                <td>{{d.upc}}</td>
-                <td><a (click)="EditData(d)" class="btn btn-warning">Edit</a></td>
-                <td><a (click)="Delete(d.upc)" class="btn btn-danger">Delete</a></td>
-              </tr>
-            </tbody>
-          </table>
         </div>
-      </form>
+      </div>
     </div>
 
+
+    <!--
+    <div class="card-group">
+      <div *ngFor="let d of snkrList; let i = index"
+           class="card text-white bg-secondary mb-3" style="width: 18rem;">
+        <img src={{d.dbImageB64}} class="card-img-top" alt={{d.name}}>
+        <div class="card-body">
+          <h5 class="card-title">{{d.name}}</h5>
+          <p class="card-text">Release: {{d.releaseDate}}</p>
+          <p class="card-text">Price: {{d.retailPrice}}</p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+    </div>
+      -->
     <!-- div class="container">
       <button type="button" class="btn btn-primary" (click)="fileInput.click()">Choose File</button>
       <button type="button" (click)="clearImage()" class="btn btn-info" [disabled]="!filename">Reset Image</button>

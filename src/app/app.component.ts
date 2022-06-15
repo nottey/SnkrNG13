@@ -11,11 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 export class AppComponent {
   public forecasts?: WeatherForecast[];
 
-  constructor(http: HttpClient) {
-    http.get<WeatherForecast[]>('/weatherforecast').subscribe(result => {
-      this.forecasts = result;
-    }, error => console.error(error)); 
-  }
+
 
   title = 'SnkrAppNG13';
 }

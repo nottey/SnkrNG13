@@ -25,8 +25,11 @@ steps:
   
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
-    includeRootFolder: false
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist/snkr-app-ng13/' 
+    includeRootFolder: false 
+    archiveType: zip
+    archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+    replaceExistingArchive: true
 
 - task: PublishPipelineArtifact@0
   inputs:
